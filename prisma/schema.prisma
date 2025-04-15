@@ -11,9 +11,23 @@ datasource db {
 }
 
 
-model Post {
+model User {
+  id     Int    @id @default(autoincrement())
+  name   String
+  about  String
+  q1     String
+  q2     String
+  q3     String
+  q4     String
+  createdAt DateTime @default(now())
+}
+
+
+
+model Habit {
   id        Int      @id @default(autoincrement())
-  title     String
-  content   String
+  name      String
+  positive  Int      @default(0)
+  negative  Int      @default(0)
   createdAt DateTime @default(now())
 }

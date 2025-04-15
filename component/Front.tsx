@@ -9,6 +9,18 @@ type Question = {
   type: "text" | "choice";
 };
 
+type User = {
+  id: number;
+  name: string;
+  about: string;
+  q1: string;
+  q2: string;
+  q3: string;
+  q4: string;
+  createdAt: string;
+};
+
+
 const questions: Question[] = [
   { key: "name", text: "What's your name?", type: "text" },
   { key: "about", text: "Tell us a little about yourself.", type: "text" },
@@ -24,6 +36,27 @@ const questions: Question[] = [
 
 
 export default function Onboarding() {
+
+
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const res = await fetch("/api/users");
+      const data = await res.json();
+      setUsers(data);
+     
+    };
+
+    fetchUsers();
+    
+
+  }, []);
+
+ 
+
+  
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [showInput, setShowInput] = useState(false);
@@ -89,25 +122,6 @@ export default function Onboarding() {
     setUserData(updatedData);
     localStorage.setItem("userData", JSON.stringify(updatedData));
     setInputValue("");
-  
-    if (currentIndex === questions.length - 1) {
-      // Send data to database
-      try {
-        await fetch("/api/save-user", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedData),
-        });
-      } catch (err) {
-        console.error("Failed to save user:", err);
-      }
-  
-      router.push("/");
-    } else {
-      setCurrentIndex((prev) => prev + 1);
-    }
 
     if (currentIndex === questions.length - 1) {
       try {
@@ -118,23 +132,32 @@ export default function Onboarding() {
           },
           body: JSON.stringify(updatedData),
         });
-    
-        localStorage.removeItem("userData"); // optional
-        router.push("/");
+
+        localStorage.removeItem("userData");
+        router.push("/habits");
       } catch (err) {
         console.error("Failed to save user to DB", err);
       }
+    } else {
+      setCurrentIndex((prev) => prev + 1);
     }
   };
+
   
 
   const current = questions[currentIndex];
+
+
+useEffect(() => {
+console.log(users)
+},[users])
+
 
   return (
 <>
     
     <div className="h-screen w-screen bg-black text-white flex  justify-center text-center px-4">
-      <div></div>
+      <div>{users[0]?.name}</div>
       <div>
         <h1 className="text-2xl sm:text-3xl font-mono whitespace-pre-wrap mb-4 pt-60">{typedText}|</h1>
 

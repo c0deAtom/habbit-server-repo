@@ -13,7 +13,7 @@ export default function Home() {
     <div className="bg-gray-800">
     <Navbar />
 <Onboarding />
-<ServerTest />
+
 
 
 </div>

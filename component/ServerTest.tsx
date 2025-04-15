@@ -1,53 +1,32 @@
 'use client';
 
 import { useState } from 'react';
+import { prisma } from '../lib/prisma'; // This will be used in server action
 
-export default function CreatePostPage() {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [loading, setLoading] = useState(false);
+export async function saveToDB(formData: FormData) {
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
 
-    const res = await fetch('/api/create-post', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, content }),
-    });
+  const text = formData.get('text')?.toString();
+  if (text) {
+    await prisma.message.create({ data: { text } });
+  }
+}
 
-    const data = await res.json();
-    alert('Post created!');
-    console.log(data);
-
-    setTitle('');
-    setContent('');
-    setLoading(false);
-  };
+export default function Home() {
+  const [text, setText] = useState('');
 
   return (
-    <main style={{ padding: '2rem' }}>
-      <h1>Create a Post</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          style={{ display: 'block', marginBottom: '1rem', padding: '0.5rem' }}
-        />
-        <textarea
-          placeholder="Content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-          style={{ display: 'block', marginBottom: '1rem', padding: '0.5rem' }}
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Saving...' : 'Save Post'}
-        </button>
-      </form>
-    </main>
+    <form action={saveToDB} className="p-4">
+      <input
+        name="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Write something"
+        className="border p-2 rounded"
+      />
+      <button type="submit" className="ml-2 bg-blue-600 text-white px-3 py-1 rounded">
+        Save
+      </button>
+    </form>
   );
 }
