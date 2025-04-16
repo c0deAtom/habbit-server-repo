@@ -1,28 +1,39 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '../../../../lib/prisma';
+import { prisma } from "../../../../lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(req: NextRequest) {
+  try {
+    const data = await req.json();
+
+   
+    const savedHabit = await prisma.habit.create({
+      data: {
+        id: data.id,
+        name: data.name,
+       
+      },
+    });
+
+    return NextResponse.json({ success: true, savedHabit });
+  } catch (error) {
+    console.error("API Error:", error);
+    return NextResponse.json({ success: false, error: error.message });
+  }
+}
 
 
 export async function GET() {
-  const habits = await prisma.habit.findMany();
-  return NextResponse.json(habits);
+  try {
+    const habits = await prisma.habit.findMany();
+    return NextResponse.json(habits);
+  } catch (error) {
+    console.error("Error fetching habits:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
 }
 
-export async function POST(req: NextRequest) {
-  const { name } = await req.json();
-  const newHabit = await prisma.habit.create({
-    data: { name },
-  });
-  return NextResponse.json(newHabit);
+export async function DELETE(req: NextRequest) {
+  const { id } = await req.json();
+  await prisma.habit.delete({ where: { id } });
+  return new NextResponse("Deleted", { status: 200 });
 }
-
-export async function PUT(req: NextRequest) {
-  const { id, positive, negative } = await req.json();
-
-  const updatedHabit = await prisma.habit.update({
-    where: { id },
-    data: { positive, negative },
-  });
-
-  return NextResponse.json(updatedHabit);
-}
-

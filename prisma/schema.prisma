@@ -23,11 +23,18 @@ model User {
 }
 
 
-
 model Habit {
-  id        Int      @id @default(autoincrement())
-  name      String
-  positive  Int      @default(0)
-  negative  Int      @default(0)
-  createdAt DateTime @default(now())
+  id   String @id
+  name String
+  logs  Log[]
 }
+
+model Log {
+  id        String   @id @default(uuid())
+  type      String   // "green" or "red"
+  timestamp Int
+  habit     Habit    @relation(fields: [habitId], references: [id])
+  habitId   String
+}
+
+

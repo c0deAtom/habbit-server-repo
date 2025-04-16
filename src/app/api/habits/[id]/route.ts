@@ -1,16 +1,32 @@
-import { prisma } from '../../../../../lib/prisma';
-import { NextResponse } from 'next/server';
+import { prisma } from "../../../../../lib/prisma";
+import { NextResponse } from "next/server";
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
-  const { type } = await req.json(); // 'green' or 'red'
-  const habitId = parseInt(params.id);
-
-  const updatedHabit = await prisma.habit.update({
-    where: { id: habitId },
-    data: type === 'green'
-      ? { greenCount: { increment: 1 } }
-      : { redCount: { increment: 1 } },
+export async function GET() {
+  const habits = await prisma.habit.findMany({
+    include: {
+      logs: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
-  return NextResponse.json(updatedHabit);
+  return NextResponse.json(habits);
+}
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  const newHabit = await prisma.habit.create({
+    data: {
+      name: body.name,
+    },
+  });
+
+  return NextResponse.json(newHabit);
+}
+
+export async function DELETE(req: NextRequest) {
+  const { id } = await req.json();
+  await prisma.habit.delete({ where: { id } });
+  return new NextResponse("Deleted", { status: 200 });
 }

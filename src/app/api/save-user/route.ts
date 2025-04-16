@@ -23,4 +23,3 @@ export async function POST(req: NextRequest) {
     return new NextResponse('Failed to save user', { status: 500 });
   }
 }
-

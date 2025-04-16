@@ -9,12 +9,21 @@ export default function Navbar() {
   const [userName, setUserName] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedName = (localStorage.getItem("userData"));
-    if (storedName) {
-        const parsed = JSON.parse(storedName)
-      setUserName(parsed.name);
-    }
+    const fetchUsers = async () => {
+      const res = await fetch("/api/users");
+      const data = await res.json();
+      setUserName(data[0].name);
+     
+    };
+
+    fetchUsers();
+    
+
   }, []);
+
+  
+
+ 
 
   return (
     <nav className="w-full bg-blue-600 text-white py-3 px-6 shadow-md">
