@@ -2,7 +2,7 @@
 
 
 import Onboarding from "../../component/Front"
-import ServerTest from "../../component/ServerTest"
+
 
 import Navbar from "../../component/Navbar"
 export default function Home() {
