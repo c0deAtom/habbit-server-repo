@@ -81,6 +81,7 @@ export default function Onboarding() {
       setUserData(savedData);
       setCurrentIndex(firstUnansweredIndex);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

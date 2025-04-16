@@ -19,17 +19,15 @@ type HabitData = {
 export default function HabitDashboard() {
   const [habits, setHabits] = useState<HabitData[]>([]);
 
-  // Load habits from DB on first load
   useEffect(() => {
     const fetchHabits = async () => {
       try {
         const res = await fetch("/api/habits");
         const dbHabits = await res.json();
 
-        // Merge DB habits with local logs from localStorage
         const local = JSON.parse(localStorage.getItem("habits") || "[]");
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
         const merged = dbHabits.map((dbHabit: any) => {
           const localMatch = local.find((h: any) => h.id === dbHabit.id);
           return {
@@ -48,7 +46,7 @@ export default function HabitDashboard() {
     fetchHabits();
   }, []);
 
-  // Save logs only to localStorage
+
   useEffect(() => {
     localStorage.setItem("habits", JSON.stringify(habits));
   }, [habits]);
@@ -65,7 +63,7 @@ export default function HabitDashboard() {
 
     setHabits((prev) => [...prev, newHabit]);
 
-    // Save to DB
+   
     try {
       await fetch("/api/habits", {
         method: "POST",
