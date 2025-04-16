@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -50,8 +50,9 @@ export default function HabitCard({ id, name, logs, onLogsChange, onDelete }: Pr
       console.error("Failed to sync with database:", err);
     }
   
-    // Save to localStorage
+    
     const storedHabits = JSON.parse(localStorage.getItem("habits") || "[]");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updatedHabits = storedHabits.map((h: any) =>
       h.id === id ? { ...h, logs: newLogs } : h
     );

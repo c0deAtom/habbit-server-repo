@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -28,6 +29,7 @@ export default function HabitDashboard() {
         // Merge DB habits with local logs from localStorage
         const local = JSON.parse(localStorage.getItem("habits") || "[]");
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const merged = dbHabits.map((dbHabit: any) => {
           const localMatch = local.find((h: any) => h.id === dbHabit.id);
           return {
