@@ -16,8 +16,11 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, savedHabit });
   } catch (error) {
-    console.error("API Error:", error);
-    return NextResponse.json({ success: false, error: error.message });
+    if (error instanceof Error) {
+      console.error("Caught error:", error.message);
+    } else {
+      console.error("Unknown error", error);
+    }
   }
 }
 
