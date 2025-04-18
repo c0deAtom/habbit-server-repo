@@ -1,19 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // lib/prisma.ts
+import { PrismaClient } from "@prisma/client";
 
-import { PrismaClient } from '@prisma/client';
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
-let prisma: PrismaClient;
-
-// Check if we're in production to initialize a single instance
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient();
-} else {
-  // Prevent creating multiple PrismaClient instances in development
-  if (!(globalThis as any).prisma) {
-    (globalThis as any).prisma = new PrismaClient();
-  }
-  prisma = (globalThis as any).prisma;
-}
-
-export { prisma };
+export const prisma = globalForPrisma.prisma ?? new PrismaClient();
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

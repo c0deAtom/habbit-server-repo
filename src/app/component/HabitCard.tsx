@@ -1,197 +1,211 @@
-"use client";
+'use client';
 
+import { useState, useEffect } from 'react';
 
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-
-type CountLog = {
-  type: "green" | "red";
-  timestamp: number;
-};
-
-type Props = {
+interface HabitCardProps {
   id: string;
-  name: string;
-  logs: CountLog[];
-  onLogsChange: (logs: CountLog[]) => void;
-  onDelete: () => void; 
-};
+  title: string;
+  description: string | null;
+  positiveCues: string[];
+  negativeTriggers: string[];
+  motivators: string[];
+  successFactors: string[];
+  events: {
+    id: string;
+    type: 'hit' | 'slip';
+    notes: string | null;
+    createdAt: string;
+  }[];
+  onDelete: (id: string) => void;
+  onUpdate: (id: string, data: any) => void;
+}
 
-export default function HabitCard({ id, name, logs, onLogsChange, onDelete }: Props) {
-  const addLog = async (type: "green" | "red") => {
-    const newLogs = [...logs, { type, timestamp: Date.now() }];
-    onLogsChange(newLogs);
-  
-    // Save to database
+export default function HabitCard({
+  id,
+  title,
+  positiveCues,
+  negativeTriggers,
+  events,
+  onDelete,
+  onUpdate
+}: HabitCardProps) {
+  const [hitCount, setHitCount] = useState(0);
+  const [slipCount, setSlipCount] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(title);
+  const [showMessage, setShowMessage] = useState<string | null>(null);
+  const [messageType, setMessageType] = useState<'hit' | 'slip' | null>(null);
+  const [successRate, setSuccessRate] = useState(0);
+
+  // Calculate success rate whenever hitCount or slipCount changes
+  useEffect(() => {
+    const total = hitCount + slipCount;
+    setSuccessRate(total > 0 ? (hitCount / total) * 100 : 0);
+  }, [hitCount, slipCount]);
+
+  useEffect(() => {
+    // Count hits and slips from events
+    const hits = events.filter(event => event.type === 'hit').length;
+    const slips = events.filter(event => event.type === 'slip').length;
+    setHitCount(hits);
+    setSlipCount(slips);
+  }, [events]);
+
+  const getRandomItem = (array: string[]) => {
+    return array[Math.floor(Math.random() * array.length)];
+  };
+
+  const recordEvent = async (type: 'hit' | 'slip') => {
     try {
-      await fetch("/api/habits", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id,
-          name,
-          
-        }),
-      });
-    } catch (err) {
-      console.error("Failed to sync with database:", err);
-    }
-  
-    
-    const storedHabits = JSON.parse(localStorage.getItem("habits") || "[]");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const updatedHabits = storedHabits.map((h: any) =>
-      h.id === id ? { ...h, logs: newLogs } : h
-    );
-    localStorage.setItem("habits", JSON.stringify(updatedHabits));
-  };
-  
-
-  const processData = () => {
-    const green = logs.filter((log) => log.type === "green");
-    const red = logs.filter((log) => log.type === "red");
-
-    const toChartData = (entries: CountLog[]) => {
-      const result: number[] = [];
-      for (let i = 1; i < entries.length; i++) {
-        const diffSec = Math.floor((entries[i].timestamp - entries[i - 1].timestamp) / 1000);
-        result.push(diffSec);
+      // Show random message based on type
+      if (type === 'hit' && positiveCues.length > 0) {
+        setShowMessage(getRandomItem(positiveCues));
+        setMessageType('hit');
+      } else if (type === 'slip' && negativeTriggers.length > 0) {
+        setShowMessage(getRandomItem(negativeTriggers));
+        setMessageType('slip');
       }
-      return result;
-    };
 
-    return {
-      labels: Array.from({ length: Math.max(green.length, red.length) -1 }, (_, i) => `${i + 1}`),
-      greenData: toChartData(green),
-      redData: toChartData(red),
-    };
+      const response = await fetch(`/api/habits/${id}/events`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ type }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to record event');
+      }
+
+      // Update counts immediately
+      if (type === 'hit') {
+        setHitCount(prev => prev + 1);
+      } else {
+        setSlipCount(prev => prev + 1);
+      }
+
+      // Hide message after 3 seconds
+      setTimeout(() => {
+        setShowMessage(null);
+        setMessageType(null);
+      }, 3000);
+    } catch (error) {
+      console.error('Error recording event:', error);
+    }
   };
 
-  const { labels, greenData, redData } = processData();
-
-  const chartData = {
-    labels,
-    datasets: [
-      {
-        label: "Green Count Gap (s)",
-        data: greenData,
-        borderColor: "green",
-        backgroundColor: "rgba(0,255,0,0.2)",
-      },
-      {
-        label: "Red Count Gap (s)",
-        data: redData,
-        borderColor: "red",
-        backgroundColor: "rgba(255,0,0,0.2)",
-      },
-    ],
+  const handleUpdate = () => {
+    onUpdate(id, {
+      title: editedTitle,
+    });
+    setIsEditing(false);
   };
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-      title: {
-        display: true,
-        text: "Time Gaps Between Counts",
-      },
-      
-    },
-  };
-
-  
-  
-
-  
-  
+  if (isEditing) {
+    return (
+      <div className="bg-white p-4 rounded-lg shadow-md">
+        <div className="flex items-center space-x-2">
+          <input
+            type="text"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+          <button
+            onClick={handleUpdate}
+            className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+          >
+            Save
+          </button>
+          <button
+            onClick={() => setIsEditing(false)}
+            className="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div style={styles.card}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2 style={styles.title}>{name}</h2>
-        <button
-          onClick={onDelete}
-          style={{
-            background: "transparent",
-            border: "none",
-            fontSize: "20px",
-            cursor: "pointer",
-            color: "#f87171",
-          }}
-          title="Delete Habit"
-        >
-          🗑️
-        </button>
+    <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-xl font-bold text-gray-800">{title}</h3>
+        <div className="flex space-x-3">
+          <button
+            onClick={() => setIsEditing(true)}
+            className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </button>
+          <button
+            onClick={() => onDelete(id)}
+            className="text-red-600 hover:text-red-800 transition-colors duration-200"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
       </div>
-  
-      <div style={styles.buttonRow}>
-        <button onClick={() => addLog("green")} style={styles.greenBtn}>
-          + Green
-        </button>
-        <button onClick={() => addLog("red")} style={styles.redBtn}>
-          + Red
-        </button>
+
+      {showMessage && (
+        <div className={`mb-6 p-4 rounded-lg text-center transform transition-all duration-300 ${
+          messageType === 'hit'
+            ? 'bg-green-50 text-green-800 border border-green-200' 
+            : 'bg-red-50 text-red-800 border border-red-200'
+        }`}>
+          <p className="font-medium">{showMessage}</p>
+        </div>
+      )}
+
+      <div className="mb-6">
+        <div className="flex justify-between text-sm text-gray-600 mb-2">
+          <span>Success Rate</span>
+          <span>{Math.round(successRate)}%</span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-2.5">
+          <div 
+            className="h-2.5 rounded-full transition-all duration-500"
+            style={{ 
+              width: `${successRate}%`,
+              backgroundColor: successRate >= 70 ? '#10B981' : successRate >= 40 ? '#F59E0B' : '#EF4444'
+            }}
+          ></div>
+        </div>
       </div>
-  
-      <div style={{ marginTop: "20px" }}>
-        <Line data={chartData} options={options} />
+
+      <div className="flex gap-8 justify-center">
+        <div className="flex flex-col items-center">
+          <button 
+            onClick={() => recordEvent('hit')}
+            className="bg-green-500 text-white px-6 py-3 rounded-xl hover:bg-green-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </button>
+          <span className="mt-3 text-2xl font-bold text-green-700">{hitCount}</span>
+          <span className="text-sm text-gray-500">Hits</span>
+        </div>
+
+        <div className="flex flex-col items-center">
+          <button
+            onClick={() => recordEvent('slip')} 
+            className="bg-red-500 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <span className="mt-3 text-2xl font-bold text-red-700">{slipCount}</span>
+          <span className="text-sm text-gray-500">Slips</span>
+        </div>
       </div>
     </div>
   );
-}  
-
-const styles: Record<string, React.CSSProperties> = {
-  card: {
-    background: "#1e1e1e",
-    padding: "20px",
-    borderRadius: "12px",
-    width: "400px",
-    margin: "30px auto",
-    color: "white",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
-  },
-  title: {
-    textAlign: "center",
-    fontSize: "24px",
-    marginBottom: "16px",
-  },
-  buttonRow: {
-    display: "flex",
-    justifyContent: "center",
-    gap: "20px",
-    marginBottom: "20px",
-  },
-  greenBtn: {
-    background: "green",
-    color: "white",
-    border: "none",
-    padding: "10px 20px",
-    fontSize: "16px",
-    borderRadius: "6px",
-    cursor: "pointer",
-  },
-  redBtn: {
-    background: "red",
-    color: "white",
-    border: "none",
-    padding: "10px 20px",
-    fontSize: "16px",
-    borderRadius: "6px",
-    cursor: "pointer",
-  },
-};
+}

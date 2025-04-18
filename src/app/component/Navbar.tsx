@@ -34,7 +34,7 @@ export default function Navbar() {
         <ul className="flex gap-4 text-sm">
           <li><Link href="/">Home</Link></li>
           <li><Link href="/habits">Habits</Link></li>
-          <li><Link href="/graph">Graph</Link></li>
+          <li><Link href="/users">User</Link></li>
         </ul>
       
       </div>

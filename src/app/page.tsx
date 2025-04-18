@@ -1,10 +1,10 @@
 "use client"
 
 
-import Onboarding from "../../component/Front"
+import Onboarding from "@/app/component/Front"
 
 
-import Navbar from "../../component/Navbar"
+import Navbar from "@/app/component/Navbar"
 export default function Home() {
 
 
