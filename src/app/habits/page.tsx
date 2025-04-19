@@ -171,7 +171,10 @@ export default function HabitDashboard() {
         {/* Modal with Habit Form */}
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <h2 className="text-black text-center text-3xl pb-5"> "Are you ready to hear me, even when my voice is nothing but silence?"</h2>
-          <SimpleHabitForm onSubmit={handleCreateHabit} />
+          <SimpleHabitForm onSubmit={(xx) => {
+            handleCreateHabit(xx);
+            console.log(xx);
+          }} />
         </Modal>
       </div>
     </>
