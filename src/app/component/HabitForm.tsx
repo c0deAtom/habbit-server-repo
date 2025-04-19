@@ -46,7 +46,7 @@ export default function HabitForm({ onSubmit }: HabitFormProps) {
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
       <div className="mb-4">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="title">
-          Habit Title
+          Habit Titledsfsd
         </label>
         <input
           id="title"

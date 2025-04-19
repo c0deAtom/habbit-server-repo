@@ -47,6 +47,7 @@ export default function HabitDashboard() {
   }, []);
 
   const handleCreateHabit = async (data: {
+    
     title: string;
     description: string | null;
     positiveCues: string[];
@@ -67,8 +68,8 @@ export default function HabitDashboard() {
         throw new Error('Failed to create habit');
       }
 
-      const newHabit = await response.json();
-      setHabits([...habits, newHabit]);
+      // Refresh habits list and close modal
+      fetchHabits();
       setIsModalOpen(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create habit');
@@ -77,15 +78,20 @@ export default function HabitDashboard() {
 
   const handleDeleteHabit = async (id: string) => {
     try {
-      const response = await fetch(`/api/habits/${id}`, {
+      const response = await fetch('/api/habits', {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
       });
 
       if (!response.ok) {
         throw new Error('Failed to delete habit');
       }
 
-      setHabits(habits.filter(habit => habit.id !== id));
+      // Refresh habits list
+      fetchHabits();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to delete habit');
     }
@@ -93,29 +99,32 @@ export default function HabitDashboard() {
 
   const handleUpdateHabit = async (id: string, data: any) => {
     try {
-      const response = await fetch(`/api/habits/${id}`, {
+      const response = await fetch('/api/habits', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ id, ...data }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update habit');
+        throw new Error('Failed to update habsdfsit');
       }
 
-      const updatedHabit = await response.json();
-      setHabits(habits.map(habit => 
-        habit.id === id ? updatedHabit : habit
-      ));
+      // Refresh habits list
+      fetchHabits();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update habit');
     }
   };
 
   if (isLoading) {
-    return <div className="p-4">Loading...</div>;
+    return <div className="p-4">  <div className="flex items-center justify-center h-screen bg-blue-100">
+      <div className="flex flex-col items-center">
+        <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-blue-700 font-semibold text-lg">Loading, please wait...</p>
+      </div>
+    </div></div>
   }
 
   if (error) {
@@ -125,21 +134,10 @@ export default function HabitDashboard() {
   return (
     <>
       <Navbar />
-      <div className="p-10 bg-gray-100 min-h-screen">
-        <div className="flex items-center gap-4 mb-8">
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="mx-40 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all duration-200 flex items-center gap-3 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            <span className="font-semibold">Add New Habit</span>
-          </button>
-          <h1 className="text-3xl font-bold text-gray-800 mx-50">Habit Dashboard</h1>
-        </div>
+      <div className="p-10 bg-gray-800 min-h-screen">
+        <h1 className="text-center text-4xl font-bold mb-8 text-gray-800">Habit Dashboard</h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
           {habits.map((habit) => (
             <HabitCard
               key={habit.id}
@@ -150,11 +148,29 @@ export default function HabitDashboard() {
           ))}
         </div>
 
+        {/* Floating Add Button */}
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full p-4 shadow-lg hover:bg-blue-700 transition-colors duration-200"
+        >
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
+          </svg>
+        </button>
+
+        {/* Modal with Habit Form */}
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Create New Habit</h2>
-            <p className="text-gray-600 mt-2">Fill in the details to start tracking your new habit</p>
-          </div>
+          <h2 className="text-black text-center text-3xl pb-5"> "Are you ready to hear me, even when my voice is nothing but silence?"</h2>
           <SimpleHabitForm onSubmit={handleCreateHabit} />
         </Modal>
       </div>

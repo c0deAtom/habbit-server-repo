@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 interface SimpleHabitFormProps {
   onSubmit: (data: {
+    userId: string
     title: string;
     description: string | null;
     positiveCues: string[];
@@ -20,17 +21,20 @@ export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
   const [negativeTriggers, setNegativeTriggers] = useState('');
   const [motivators, setMotivators] = useState('');
   const [successFactors, setSuccessFactors] = useState('');
+  const [userId, setUserId] = useState('010b6549-a538-49b0-a2f5-c27082fa3811')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     onSubmit({
+        userId,
       title,
       description: description || null,
       positiveCues: positiveCues.split(',').map(cue => cue.trim()).filter(Boolean),
       negativeTriggers: negativeTriggers.split(',').map(trigger => trigger.trim()).filter(Boolean),
       motivators: motivators.split(',').map(motivator => motivator.trim()).filter(Boolean),
       successFactors: successFactors.split(',').map(factor => factor.trim()).filter(Boolean),
+
     });
 
     // Reset form
@@ -40,20 +44,21 @@ export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
     setNegativeTriggers('');
     setMotivators('');
     setSuccessFactors('');
+    
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Add New Habit</h2>
+    <form onSubmit={handleSubmit} className="bg-gray-200 p-6 rounded-lg shadow-md max-w-2xl mx-auto">
+     
       
-      <div className="space-y-4">
+      <div className="space-y-4 ">
         <div>
           <label className="block text-sm font-medium text-gray-700">Title</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full text-gray-600 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             required
             placeholder="e.g. Daily Meditation"
           />
@@ -64,7 +69,7 @@ export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full text-gray-900 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             rows={3}
             placeholder="e.g. 15 minutes of mindfulness meditation"
           />
@@ -76,7 +81,7 @@ export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
             type="text"
             value={positiveCues}
             onChange={(e) => setPositiveCues(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full text-gray-900 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="e.g. morning sunlight, quiet space, meditation app"
           />
         </div>
@@ -87,7 +92,7 @@ export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
             type="text"
             value={negativeTriggers}
             onChange={(e) => setNegativeTriggers(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full text-gray-900 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="e.g. noise, distractions, lack of time"
           />
         </div>
@@ -98,7 +103,7 @@ export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
             type="text"
             value={motivators}
             onChange={(e) => setMotivators(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full text-gray-900 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="e.g. mental clarity, stress reduction, spiritual growth"
           />
         </div>
@@ -109,7 +114,7 @@ export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
             type="text"
             value={successFactors}
             onChange={(e) => setSuccessFactors(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full text-gray-900   rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="e.g. waking up early, dedicated space, guided sessions"
           />
         </div>

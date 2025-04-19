@@ -18,23 +18,12 @@ export async function POST(request: Request) {
     // Generate a UUID for the habit
     const id = crypto.randomUUID();
 
-    // First, create or get a user
-    const user = await prisma.user.upsert({
-      where: { id },
-      update: {},
-      create: {
-        id,
-        name: "Default User",
-        email: `${id}@example.com`,
-        personalityInsights: "Default user created for habit tracking"
-      } as any
-    });
-
+  
     // Then create the habit
     const habit = await prisma.habit.create({
       data: {
         id,
-        userId: user.id,
+        userId: "010b6549-a538-49b0-a2f5-c27082fa3811",
         title,
         description,
         positiveCues,

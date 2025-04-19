@@ -27,15 +27,28 @@ export default function HabitCard({
   negativeTriggers,
   events,
   onDelete,
-  onUpdate
+  onUpdate,
+  description,
+  motivators,
+  successFactors,
+
 }: HabitCardProps) {
   const [hitCount, setHitCount] = useState(0);
   const [slipCount, setSlipCount] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(title);
   const [showMessage, setShowMessage] = useState<string | null>(null);
-  const [messageType, setMessageType] = useState<'hit' | 'slip' | null>(null);
   const [successRate, setSuccessRate] = useState(0);
+
+
+  const [editedDescription, setEditedDescription] = useState(description || '');
+const [editedPositiveCues, setEditedPositiveCues] = useState(positiveCues.join(', ' ));
+const [editedNegativeTriggers, setEditedNegativeTriggers] = useState(negativeTriggers.join(', '));
+const [editedMotivators, setEditedMotivators] = useState(motivators.join(', '));
+const [editedSuccessFactors, setEditedSuccessFactors] = useState(successFactors.join(', '));
+
+
+console.log(positiveCues);
 
   // Calculate success rate whenever hitCount or slipCount changes
   useEffect(() => {
@@ -59,11 +72,9 @@ export default function HabitCard({
     try {
       // Show random message based on type
       if (type === 'hit' && positiveCues.length > 0) {
-        setShowMessage(getRandomItem(positiveCues));
-        setMessageType('hit');
+        setShowMessage(`- ${getRandomItem(positiveCues)} -`);
       } else if (type === 'slip' && negativeTriggers.length > 0) {
-        setShowMessage(getRandomItem(negativeTriggers));
-        setMessageType('slip');
+        setShowMessage(`${getRandomItem(negativeTriggers)}`);
       }
 
       const response = await fetch(`/api/habits/${id}/events`, {
@@ -88,7 +99,6 @@ export default function HabitCard({
       // Hide message after 3 seconds
       setTimeout(() => {
         setShowMessage(null);
-        setMessageType(null);
       }, 3000);
     } catch (error) {
       console.error('Error recording event:', error);
@@ -98,41 +108,90 @@ export default function HabitCard({
   const handleUpdate = () => {
     onUpdate(id, {
       title: editedTitle,
+      description: editedDescription,
+      positiveCues: editedPositiveCues.split(',').map(item => item.trim()),
+      negativeTriggers: editedNegativeTriggers.split(',').map(item => item.trim()),
+      motivators: editedMotivators.split(',').map(item => item.trim()),
+      successFactors: editedSuccessFactors.split(',').map(item => item.trim()),
     });
     setIsEditing(false);
   };
+  
 
   if (isEditing) {
     return (
-      <div className="bg-white p-4 rounded-lg shadow-md">
-        <div className="flex items-center space-x-2">
-          <input
-            type="text"
-            value={editedTitle}
-            onChange={(e) => setEditedTitle(e.target.value)}
-            className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          />
-          <button
-            onClick={handleUpdate}
-            className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
-          >
-            Save
-          </button>
-          <button
-            onClick={() => setIsEditing(false)}
-            className="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700"
-          >
-            Cancel
-          </button>
-        </div>
+      <div className="bg-white p-4 rounded-lg shadow-md space-y-4 text-gray-600">
+      <div className="flex items-center space-x-2">
+        <input
+          type="text"
+          value={editedTitle}
+          onChange={(e) => setEditedTitle(e.target.value)}
+          placeholder="Title"
+          className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
       </div>
+  
+      <textarea
+        value={editedDescription}
+        onChange={(e) => setEditedDescription(e.target.value)}
+        placeholder="Description"
+        className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+      />
+  
+      <input
+        type="text"
+        value={editedPositiveCues}
+        onChange={(e) => setEditedPositiveCues(e.target.value)}
+        placeholder="Positive Cues (comma separated)"
+        className="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+      />
+  
+      <input
+        type="text"
+        value={editedNegativeTriggers}
+        onChange={(e) => setEditedNegativeTriggers(e.target.value)}
+        placeholder="Negative Triggers (comma separated)"
+        className="w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500"
+      />
+  
+      <input
+        type="text"
+        value={editedMotivators}
+        onChange={(e) => setEditedMotivators(e.target.value)}
+        placeholder="Motivators (comma separated)"
+        className="w-full rounded-md border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500"
+      />
+  
+      <input
+        type="text"
+        value={editedSuccessFactors}
+        onChange={(e) => setEditedSuccessFactors(e.target.value)}
+        placeholder="Success Factors (comma separated)"
+        className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+      />
+  
+      <div className="flex justify-end gap-2 pt-2">
+        <button
+          onClick={handleUpdate}
+          className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+        >
+          Save
+        </button>
+        <button
+          onClick={() => setIsEditing(false)}
+          className="bg-gray-600 text-white px-3 py-1 rounded-md hover:bg-gray-700"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
     );
   }
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+    <div className="bg-gray-700 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-bold text-gray-800">{title}</h3>
+        <h3 className="text-xl font-bold text-gray-300">{title}</h3>
         <div className="flex space-x-3">
           <button
             onClick={() => setIsEditing(true)}
@@ -153,18 +212,21 @@ export default function HabitCard({
         </div>
       </div>
 
-      {showMessage && (
-        <div className={`mb-6 p-4 rounded-lg text-center transform transition-all duration-300 ${
-          messageType === 'hit'
-            ? 'bg-green-50 text-green-800 border border-green-200' 
-            : 'bg-red-50 text-red-800 border border-red-200'
-        }`}>
-          <p className="font-medium">{showMessage}</p>
-        </div>
-      )}
-
+    <div className="mb-6 h-4 transition-all duration-300">
+  <div
+    className={`p-4 rounded-lg text-center transition-opacity duration-300 h-full flex items-center justify-center ${
+      showMessage
+        ? showMessage.includes('-')
+          ? 'opacity-100 bg-green-50 text-green-800 border border-green-200'
+          : 'opacity-100 bg-red-50 text-red-800 border border-red-200'
+        : 'opacity-0'
+    }`}
+  >
+    <p className="font-medium">{showMessage || ' '}</p>
+  </div>
+</div>
       <div className="mb-6">
-        <div className="flex justify-between text-sm text-gray-600 mb-2">
+        <div className="flex justify-between text-sm text-gray-200 mb-2">
           <span>Success Rate</span>
           <span>{Math.round(successRate)}%</span>
         </div>
