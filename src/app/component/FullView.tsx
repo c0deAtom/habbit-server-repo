@@ -19,7 +19,7 @@ interface HabitCardProps {
   }[];
   onDelete: (id: string) => void;
   onUpdate: (id: string, data: any) => void;
-  setFullScreen: React.Dispatch<React.SetStateAction<string[]>>;
+  onClose: React.Dispatch<React.SetStateAction<Habit | null>>;
 }
 
 export default function FullView({
@@ -33,7 +33,7 @@ export default function FullView({
   description,
   motivators,
   successFactors,
-  setFullScreen
+  onClose,
 
 }: HabitCardProps) {
   const [hitCount, setHitCount] = useState(0);
@@ -182,7 +182,7 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
   return (
     <div className="bg-gray-700 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-180 ">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-bold text-gray-300">{title}</h3>
+        <h5 className="text-4xl font-bold text-gray-300 text mx-170 my-2">{title}</h5>
         <div className="flex space-x-3">
           <button
             onClick={() => setIsEditing(true)}
@@ -199,6 +199,25 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
             </svg>
+          </button>
+          <button
+            onClick={() => onClose(null)}
+            className="text-red-600 hover:text-red-800 transition-colors duration-200"
+          >
+            <svg
+  xmlns="http://www.w3.org/2000/svg"
+  className="h-6 w-6 cursor-pointer text-gray-600 hover:text-red-600"
+  fill="none"
+  viewBox="0 0 24 24"
+  stroke="currentColor"
+  strokeWidth={2}
+>
+  <path
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    d="M6 18L18 6M6 6l12 12"
+  />
+</svg>
           </button>
         </div>
       </div>
@@ -259,6 +278,40 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
           <span className="text-sm text-gray-500">Slips</span>
         </div>
       </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6 text-blue-300">
+      <div className="bg-white shadow-md rounded-lg p-4 ">
+        <h2 className="font-semibold text-lg mb-2">positiveCues</h2>
+        <ul className="space-y-1">
+          {positiveCues.map((item, index) => (
+            <li key={index} className="text-gray-700">{item}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="bg-white shadow-md rounded-lg p-4">
+        <h2 className="font-semibold text-lg mb-2">negativeTriggers</h2>
+        <ul className="space-y-1">
+          {negativeTriggers.map((item, index) => (
+            <li key={index} className="text-gray-700">{item}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="bg-white shadow-md rounded-lg p-4">
+        <h2 className="font-semibold text-lg mb-2">motivators</h2>
+        <ul className="space-y-1">
+          {motivators.map((item, index) => (
+            <li key={index} className="text-gray-700">{item}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="bg-white shadow-md rounded-lg p-4">
+        <h2 className="font-semibold text-lg mb-2">successFactors</h2>
+        <ul className="space-y-1">
+          {successFactors.map((item, index) => (
+            <li key={index} className="text-gray-700">{item}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
     </div>
   );
 }

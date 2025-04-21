@@ -155,17 +155,16 @@ export default function HabitDashboard() {
         {selectedHabit ? (
         // Full-screen view
         <div >
-          <button
-            onClick={() => setSelectedHabit(null)}
-            className="absolute top-4 right-4 text-gray-600 hover:text-black"
-          >
-            ✖ Close
-          </button>
+          
+           
+         
+
           <FullView
                 key={selectedHabit.id}
                 {...selectedHabit}
                 onDelete={handleDeleteHabit}
                 onUpdate={handleUpdateHabit}
+                onClose={setSelectedHabit}
               />
         </div>
       ) : (
