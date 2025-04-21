@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Tag from './Tag';
 
 interface SimpleHabitFormProps {
   onSubmit: (data: {
@@ -17,10 +18,10 @@ interface SimpleHabitFormProps {
 export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [positiveCues, setPositiveCues] = useState('');
-  const [negativeTriggers, setNegativeTriggers] = useState('');
-  const [motivators, setMotivators] = useState('');
-  const [successFactors, setSuccessFactors] = useState('');
+  const [positiveCues, setPositiveCues] = useState<string[]>([]);
+  const [negativeTriggers, setNegativeTriggers] = useState<string[]>([]);
+  const [motivators, setMotivators] = useState<string[]>([]);
+  const [successFactors, setSuccessFactors] = useState<string[]>([]);
   const [userId, setUserId] = useState('010b6549-a538-49b0-a2f5-c27082fa3811')
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -30,20 +31,20 @@ export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
         userId,
       title,
       description: description || null,
-      positiveCues: positiveCues.split(',').map(cue => cue.trim()).filter(Boolean),
-      negativeTriggers: negativeTriggers.split(',').map(trigger => trigger.trim()).filter(Boolean),
-      motivators: motivators.split(',').map(motivator => motivator.trim()).filter(Boolean),
-      successFactors: successFactors.split(',').map(factor => factor.trim()).filter(Boolean),
+      positiveCues: positiveCues.map(cue => cue.trim()).filter(Boolean),
+      negativeTriggers: negativeTriggers.map(trigger => trigger.trim()).filter(Boolean),
+      motivators: motivators.map(motivator => motivator.trim()).filter(Boolean),
+      successFactors: successFactors.map(factor => factor.trim()).filter(Boolean),
 
     });
 
     // Reset form
     setTitle('');
     setDescription('');
-    setPositiveCues('');
-    setNegativeTriggers('');
-    setMotivators('');
-    setSuccessFactors('');
+    setPositiveCues([]);
+    setNegativeTriggers([]);
+    setMotivators([]);
+    setSuccessFactors([]);
     
   };
 
@@ -75,49 +76,23 @@ export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Positive Cues (comma separated)</label>
-          <input
-            type="text"
-            value={positiveCues}
-            onChange={(e) => setPositiveCues(e.target.value)}
-            className="mt-1 block w-full text-gray-900 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="e.g. morning sunlight, quiet space, meditation app"
-          />
-        </div>
+        <Tag data={positiveCues} title="Positive Cues"
+      setData={setPositiveCues}/>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Negative Triggers (comma separated)</label>
-          <input
-            type="text"
-            value={negativeTriggers}
-            onChange={(e) => setNegativeTriggers(e.target.value)}
-            className="mt-1 block w-full text-gray-900 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="e.g. noise, distractions, lack of time"
-          />
-        </div>
+       <Tag data={negativeTriggers}
+       setData={setNegativeTriggers} title="Negetive Triggers"/>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Motivators (comma separated)</label>
-          <input
-            type="text"
-            value={motivators}
-            onChange={(e) => setMotivators(e.target.value)}
-            className="mt-1 block w-full text-gray-900 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="e.g. mental clarity, stress reduction, spiritual growth"
-          />
-        </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Success Factors (comma separated)</label>
-          <input
-            type="text"
-            value={successFactors}
-            onChange={(e) => setSuccessFactors(e.target.value)}
-            className="mt-1 block w-full text-gray-900   rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="e.g. waking up early, dedicated space, guided sessions"
-          />
-        </div>
+      <Tag data={motivators}
+      setData={setMotivators}
+      title="Motivators"
+      />
+
+
+      <Tag data={successFactors}
+      title="Success Factors"
+      setData={setSuccessFactors}/>
+ 
 
         <div className="pt-4">
           <button

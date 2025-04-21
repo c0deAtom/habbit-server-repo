@@ -22,7 +22,7 @@ interface HabitCardProps {
   setFullScreen: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-export default function HabitCard({
+export default function FullView({
   id,
   title,
   positiveCues,
@@ -180,7 +180,7 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
   }
 
   return (
-    <div className="bg-gray-700 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 ">
+    <div className="bg-gray-700 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-180 ">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-xl font-bold text-gray-300">{title}</h3>
         <div className="flex space-x-3">
@@ -249,7 +249,7 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
         <div className="flex flex-col items-center">
           <button
             onClick={() => recordEvent('slip')} 
-            className="bg-red-500 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+            className="bg-red-100 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

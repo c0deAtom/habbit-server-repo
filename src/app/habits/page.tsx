@@ -4,6 +4,8 @@ import HabitCard from "../component/HabitCard";
 import SimpleHabitForm from "../component/SimpleHabitForm";
 import Modal from "../component/Modal";
 import Navbar from "../component/Navbar";
+import FullView from "../component/FullView"
+import UsersPage from "../users/page";
 
 interface Habit {
   id: string;
@@ -22,10 +24,20 @@ interface Habit {
 }
 
 export default function HabitDashboard() {
+  const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
+
+
+
+
+  
+
+
+
   const [habits, setHabits] = useState<Habit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFullView, setIsFullView] = useState(false);
 
   const fetchHabits = async () => {
     try {
@@ -96,6 +108,7 @@ export default function HabitDashboard() {
       setError(err instanceof Error ? err.message : 'Failed to delete habit');
     }
   };
+  
 
   const handleUpdateHabit = async (id: string, data: any) => {
     try {
@@ -135,18 +148,40 @@ export default function HabitDashboard() {
     <>
       <Navbar />
       <div className="p-10 bg-gray-800 min-h-screen">
+
         <h1 className="text-center text-4xl font-bold mb-8 text-gray-800">Habit Dashboard</h1>
+
+        
+        {selectedHabit ? (
+        // Full-screen view
+        <div >
+          <button
+            onClick={() => setSelectedHabit(null)}
+            className="absolute top-4 right-4 text-gray-600 hover:text-black"
+          >
+            ✖ Close
+          </button>
+          <FullView
+                key={selectedHabit.id}
+                {...selectedHabit}
+                onDelete={handleDeleteHabit}
+                onUpdate={handleUpdateHabit}
+              />
+        </div>
+      ) : (
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
           {habits.map((habit) => (
-            <HabitCard
-              key={habit.id}
-              {...habit}
-              onDelete={handleDeleteHabit}
-              onUpdate={handleUpdateHabit}
-            />
+            <div onClick={() => {setSelectedHabit(habit)}}>
+              <HabitCard
+                key={habit.id}
+                {...habit}
+                onDelete={handleDeleteHabit}
+                onUpdate={handleUpdateHabit}
+              />
+            </div>
           ))}
-        </div>
+        </div>)}
 
         {/* Floating Add Button */}
         <button
@@ -176,6 +211,15 @@ export default function HabitDashboard() {
             console.log(xx);
           }} />
         </Modal>
+
+        
+          <h2> full view </h2>
+         
+         
+              
+     
+     
+
       </div>
     </>
   );
