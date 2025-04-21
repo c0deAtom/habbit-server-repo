@@ -5,8 +5,9 @@ const prisma = new PrismaClient();
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
+  console.log('1111111')
   try {
     const { type } = await request.json();
     const habitId = params.id;
@@ -19,16 +20,17 @@ export async function POST(
     if (!habit) {
       return NextResponse.json({ error: 'Habit not found' }, { status: 404 });
     }
-
     // Create a new event
     const event = await prisma.habitEvent.create({
       data: {
         habitId,
         userId: habit.userId,
         type,
-        notes: null
+        notes: 'null'
       }
     });
+    console.log('222222')
+    console.log(NextResponse.json(event))
 
     return NextResponse.json(event);
   } catch (error) {

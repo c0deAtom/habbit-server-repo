@@ -12,13 +12,15 @@ interface HabitData {
 export default function Tag({data, setData, title}: HabitData) {
   const [tags, setTags] = useState<string[]>(data);
   const [inputValue, setInputValue] = useState("");
+  const [saveTags, setSaveTags] = useState([])
 
 useEffect(() => {
     setData(tags);
     
 }, [tags])
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+
+   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputValue.trim() !== "") {
       e.preventDefault();
       if (!tags.includes(inputValue.trim())) {
@@ -41,15 +43,15 @@ useEffect(() => {
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto mt-6">
-      <label className="block text-gray-700 font-medium mb-2">{title}</label>
+   <div className="w-full max-w-xl mx-auto mt-6">
+      <label className="block text-gray-700 font-medium mb-2">Tags</label>
       <div className="flex flex-wrap gap-2 p-2 border border-gray-300 rounded-lg bg-white focus-within:ring-2 ring-blue-500">
         {tags.map((tag, index) => (
           <div
             key={index}
             className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium"
           >
-            {tags}
+            {tag}
             <button
               onClick={() => removeTag(index)}
               className="ml-2 text-blue-500 hover:text-blue-700 focus:outline-none"

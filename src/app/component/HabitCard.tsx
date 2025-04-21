@@ -19,7 +19,7 @@ interface HabitCardProps {
   }[];
   onDelete: (id: string) => void;
   onUpdate: (id: string, data: any) => void;
-  setFullScreen: React.Dispatch<React.SetStateAction<string[]>>;
+  
 }
 
 export default function HabitCard({
@@ -33,7 +33,7 @@ export default function HabitCard({
   description,
   motivators,
   successFactors,
-  setFullScreen
+
 
 }: HabitCardProps) {
   const [hitCount, setHitCount] = useState(0);
@@ -80,6 +80,8 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
         setShowMessage(`${getRandomItem(negativeTriggers)}`);
       }
 
+      console.log("tested")
+
       const response = await fetch(`/api/habits/${id}/events`, {
         method: 'POST',
         headers: {
@@ -87,7 +89,7 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
         },
         body: JSON.stringify({ type }),
       });
-
+console.log(response)
       if (!response.ok) {
         throw new Error('Failed to record event');
       }
@@ -185,7 +187,11 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
         <h3 className="text-xl font-bold text-gray-300">{title}</h3>
         <div className="flex space-x-3">
           <button
-            onClick={() => setIsEditing(true)}
+            
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsEditing(true);
+            }}
             className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -193,7 +199,10 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
             </svg>
           </button>
           <button
-            onClick={() => onDelete(id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(id);
+              }}
             className="text-red-600 hover:text-red-800 transition-colors duration-200"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -235,7 +244,11 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
       <div className="flex gap-8 justify-center">
         <div className="flex flex-col items-center">
           <button 
-            onClick={() => recordEvent('hit')}
+          onClick={(e) => {
+            e.stopPropagation(); // Prevents the card click event
+            recordEvent('hit');
+          }}
+            
             className="bg-green-500 text-white px-6 py-3 rounded-xl hover:bg-green-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,7 +261,10 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
 
         <div className="flex flex-col items-center">
           <button
-            onClick={() => recordEvent('slip')} 
+             onClick={(e) => {
+              e.stopPropagation();
+              recordEvent('slip');
+            }}
             className="bg-red-500 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -262,3 +278,4 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
     </div>
   );
 }
+

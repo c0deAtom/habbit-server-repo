@@ -19,7 +19,7 @@ interface HabitCardProps {
   }[];
   onDelete: (id: string) => void;
   onUpdate: (id: string, data: any) => void;
-  onClose: React.Dispatch<React.SetStateAction<Habit | null>>;
+  onClose: React.Dispatch<React.SetStateAction<null>>;
 }
 
 export default function FullView({
@@ -53,11 +53,7 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
 
 
 
-  // Calculate success rate whenever hitCount or slipCount changes
-  useEffect(() => {
-    const total = hitCount + slipCount;
-    setSuccessRate(total > 0 ? (hitCount / total) * 100 : 0);
-  }, [hitCount, slipCount]);
+ 
 
   useEffect(() => {
     // Count hits and slips from events
@@ -181,9 +177,9 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
 
   return (
     <div className="bg-gray-700 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-180 ">
-      <div className="flex justify-between items-center mb-6">
-        <h5 className="text-4xl font-bold text-gray-300 text mx-170 my-2">{title}</h5>
-        <div className="flex space-x-3">
+      <div className="flex justify-between  mb-6">
+        <h5 className="text-4xl font-bold text-gray-300 text mx-150 my-2">{title}</h5>
+        <div className="flex space-x-3 ">
           <button
             onClick={() => setIsEditing(true)}
             className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
@@ -235,47 +231,35 @@ const [editedSuccessFactors, setEditedSuccessFactors] = useState<string[]>([])
     <p className="font-medium">{showMessage || ' '}</p>
   </div>
 </div>
-      <div className="mb-6">
-        <div className="flex justify-between text-sm text-gray-200 mb-2">
-          <span>Success Rate</span>
-          <span>{Math.round(successRate)}%</span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-2.5">
-          <div 
-            className="h-2.5 rounded-full transition-all duration-500"
-            style={{ 
-              width: `${successRate}%`,
-              backgroundColor: successRate >= 70 ? '#10B981' : successRate >= 40 ? '#F59E0B' : '#EF4444'
-            }}
-          ></div>
-        </div>
-      </div>
+    
 
-      <div className="flex gap-8 justify-center">
-        <div className="flex flex-col items-center">
+      <div className="flex gap-150 justify-center">
+        <div className="flex flex-raw gap-20 items-center ">
+      
           <button 
             onClick={() => recordEvent('hit')}
-            className="bg-green-500 text-white px-6 py-3 rounded-xl hover:bg-green-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+            className="bg-green-500 text-white px-6 py-3 rounded-xl hover:bg-green-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 w-50 h-30"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </button>
-          <span className="mt-3 text-2xl font-bold text-green-700">{hitCount}</span>
-          <span className="text-sm text-gray-500">Hits</span>
+          <span className="mt-3 text-6xl font-bold text-green-700">{hitCount}</span>
+         
         </div>
 
-        <div className="flex flex-col items-center">
+        <div className="flex flex-raw items-center gap-20 ">
+        <span className="mt-3 text-6xl font-bold text-red-700">{slipCount}</span>
           <button
             onClick={() => recordEvent('slip')} 
-            className="bg-red-100 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+            className="bg-red-500 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 w-50 h-30"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          <span className="mt-3 text-2xl font-bold text-red-700">{slipCount}</span>
-          <span className="text-sm text-gray-500">Slips</span>
+         
+      
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6 text-blue-300">

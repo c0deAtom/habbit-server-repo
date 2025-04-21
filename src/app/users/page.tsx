@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<any[]>([]); // replace 'any' with your user type if available
+  const [users, setUsers] = useState<any>([]); // replace 'any' with your user type if available
   
 
   const fetchUsers = async () => {
@@ -42,7 +42,7 @@ export default function UsersPage() {
       <h1 className="text-3xl font-bold text-center mb-10">All Users</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {users.map((user) => (
+        {users.map((user: any) => (
           <div
             key={user.id}
             className="bg-gray-800 rounded-xl p-5 shadow-lg hover:shadow-xl transition-shadow duration-300 relative"

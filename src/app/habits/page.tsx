@@ -5,7 +5,6 @@ import SimpleHabitForm from "../component/SimpleHabitForm";
 import Modal from "../component/Modal";
 import Navbar from "../component/Navbar";
 import FullView from "../component/FullView"
-import UsersPage from "../users/page";
 
 interface Habit {
   id: string;
@@ -37,7 +36,6 @@ export default function HabitDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isFullView, setIsFullView] = useState(false);
 
   const fetchHabits = async () => {
     try {
@@ -154,7 +152,7 @@ export default function HabitDashboard() {
         
         {selectedHabit ? (
         // Full-screen view
-        <div >
+        <div>
           
            
          
@@ -164,7 +162,7 @@ export default function HabitDashboard() {
                 {...selectedHabit}
                 onDelete={handleDeleteHabit}
                 onUpdate={handleUpdateHabit}
-                onClose={setSelectedHabit}
+                onClose={setSelectedHabit as any}
               />
         </div>
       ) : (
@@ -204,7 +202,7 @@ export default function HabitDashboard() {
 
         {/* Modal with Habit Form */}
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-          <h2 className="text-black text-center text-3xl pb-5"> "Are you ready to hear me, even when my voice is nothing but silence?"</h2>
+          <h2 className="text-black text-center text-3xl pb-5"> Are you ready to hear me, even when my voice is nothing but silence?</h2>
           <SimpleHabitForm onSubmit={(xx) => {
             handleCreateHabit(xx);
             console.log(xx);
@@ -212,8 +210,7 @@ export default function HabitDashboard() {
         </Modal>
 
         
-          <h2> full view </h2>
-         
+
          
               
      

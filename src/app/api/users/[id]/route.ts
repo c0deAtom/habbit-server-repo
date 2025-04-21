@@ -3,13 +3,13 @@ import { NextResponse } from "next/server";
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: number } }
+  { params }: any
 ) {
   try {
     const userId = parseInt(params.id); // Convert string to number
 
     await prisma.user.delete({
-      where: { id: userId },
+      where: { id: userId.toString() },
     });
 
     return NextResponse.json({ message: "User deleted successfully" }, { status: 200 });
