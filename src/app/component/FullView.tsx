@@ -29,7 +29,7 @@ export default function FullView({
   const [editedTitle, setEditedTitle] = useState(selectedHabit.title);
   const [showMessage, setShowMessage] = useState<string | null>(null);
   const [successRate, setSuccessRate] = useState(0);
- 
+
   const [eventData, setEventData] = useState(selectedHabit.events)
 
 
@@ -164,7 +164,7 @@ export default function FullView({
   if (isEditing) {
     return (
 
-      <div className="bg-gray-700 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-180 ">
+      <div className="bg-gray-700 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-210 ">
         <div className="flex justify-between  mb-6">
 
 
@@ -239,7 +239,7 @@ export default function FullView({
               onClick={() => recordEvent('hit')}
               className="bg-green-500 text-white px-6 py-3 rounded-xl hover:bg-green-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 w-50 h-30"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-25 h-25" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </button>
@@ -261,7 +261,7 @@ export default function FullView({
           </div>
 
           <div className="flex flex-raw items-center gap-20 ">
-          <button onClick={() => {
+            <button onClick={() => {
               deleteEvent(getLatestEventIdByType('slip'), selectedHabit.id)
             }}>
               <svg className="w-12 h-10 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -275,7 +275,7 @@ export default function FullView({
               onClick={() => recordEvent('slip')}
               className="bg-red-500 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 w-50 h-30"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-27 h-27" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -285,33 +285,42 @@ export default function FullView({
 
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6 text-blue-300">
-          <div className="bg-white shadow-md rounded-lg p-4 ">
-            <h2 className="font-semibold text-lg mb-2">positiveCues</h2>
+        <div className="my-15 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6 text-blue-300">
 
-            <Tag data={selectedHabit.positiveCues} title="Positive Cues"
-              setData={setEditedPositiveCues} />
+          <div className="bg-gray-600  rounded-lg p-4 w-full max-w-md h-64 overflow-y-auto   ">
+            <h2 className="font-semibold text-lg mb-2">Positive Cues</h2>
+            <ul className="list-none space-y-3 text-gray-800 dark:text-white ">
+              <Tag data={selectedHabit.positiveCues} title="d"
+                setData={setEditedPositiveCues} />
+            </ul>
           </div>
-          <div className="bg-white shadow-md rounded-lg p-4">
-            <h2 className="font-semibold text-lg mb-2">negativeTriggers</h2>
-            <Tag data={selectedHabit.negativeTriggers}
-              setData={setEditedNegativeTriggers} title="Negetive Triggers" />
+          <div className="bg-gray-600 shadow-md rounded-lg p-4 w-full max-w-md h-64 overflow-y-auto border  ">
+            <h2 className="font-semibold text-lg mb-2">Negative Triggers</h2>
+            <ul className="list-none space-y-3 text-gray-800 dark:text-white ">
+              <Tag data={selectedHabit.negativeTriggers} title="d"
+                setData={setEditedNegativeTriggers} />
+            </ul>
           </div>
-          <div className="bg-white shadow-md rounded-lg p-4">
-            <h2 className="font-semibold text-lg mb-2">motivators</h2>
-            <Tag data={selectedHabit.motivators}
-              setData={setEditedMotivators}
-              title="Motivators"
-            />
+          <div className="bg-gray-600 shadow-md rounded-lg p-4 w-full max-w-md h-64 overflow-y-auto border  ">
+            <h2 className="font-semibold text-lg mb-2">Motivators</h2>
+            <ul className="list-none space-y-3 text-gray-800 dark:text-white ">
+              <Tag data={selectedHabit.motivators} title="d"
+                setData={setEditedMotivators} />
+            </ul>
           </div>
-          <div className="bg-white shadow-md rounded-lg p-4">
-            <h2 className="font-semibold text-lg mb-2">successFactors</h2>
+          <div className="bg-gray-600 shadow-md rounded-lg p-4 w-full max-w-md h-64 overflow-y-auto border  ">
+            <h2 className="font-semibold text-lg mb-2">Success Factors</h2>
+            <ul className="list-none space-y-3 text-gray-800 dark:text-white ">
+              <Tag data={selectedHabit.successFactors} title="d"
+                setData={setEditedSuccessFactors} />
+            </ul>
+          </div>
 
-            <Tag data={selectedHabit.successFactors}
-              title="Success Factors"
-              setData={setEditedSuccessFactors} />
 
-          </div >
+
+
+
+
 
         </div>
         <div className="flex justify-end gap-2 pt-2 my-30">
@@ -341,9 +350,9 @@ export default function FullView({
   }
 
   return (
-    <div className="bg-gray-700 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-180 ">
+    <div className="bg-gray-700 p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 h-210 ">
       <div className="flex justify-between  mb-6">
-        <h5 className="text-4xl font-bold text-gray-300 text  my-2">{selectedHabit.title}</h5>
+        <h5 className="text-4xl font-bold text-gray-300 text  my-2 font-sans">{selectedHabit.title}</h5>
 
         <div className="flex space-x-3 ">
           <button
@@ -405,7 +414,7 @@ export default function FullView({
             onClick={() => recordEvent('hit')}
             className="bg-green-500 text-white px-6 py-3 rounded-xl hover:bg-green-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 w-50 h-30"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-30 h-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </button>
@@ -419,7 +428,7 @@ export default function FullView({
             onClick={() => recordEvent('slip')}
             className="bg-red-500 text-white px-6 py-3 rounded-xl hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105 w-50 h-30"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-27 h-27" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
@@ -427,36 +436,52 @@ export default function FullView({
 
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6 text-blue-300">
-        <div className="bg-white shadow-md rounded-lg p-4 ">
-          <h2 className="font-semibold text-lg mb-2">positiveCues</h2>
-          <ul className="space-y-1">
+      <div className="my-15 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-6 text-blue-300  ">
+        <div className="bg-gray-600 shadow-md rounded-lg p-4 w-full max-w-md h-64 overflow-y-auto border ">
+          <h2 className="font-semibold text-lg mb-2">Positive Cues</h2>
+          <ul className="list-none space-y-3 text-gray-800 dark:text-white ">
             {selectedHabit.positiveCues.map((item, index) => (
-              <li key={index} className="text-gray-700">{item}</li>
+              <li key={index} className="flex items-center gap-2 hover:text-blue-600 transition text-gray-300 font-mono ">
+                <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.153 19 21 12l-4.847-7H3l4.848 7L3 19h13.153Z" />
+                </svg>
+                {item}</li>
             ))}
           </ul>
         </div>
-        <div className="bg-white shadow-md rounded-lg p-4">
-          <h2 className="font-semibold text-lg mb-2">negativeTriggers</h2>
-          <ul className="space-y-1">
+        <div className="bg-gray-600 shadow-md rounded-lg p-4 w-full max-w-md h-64 overflow-y-auto border  ">
+          <h2 className="font-semibold text-lg mb-2">Negative Triggers</h2>
+          <ul className="list-none space-y-3 text-gray-800 dark:text-white ">
             {selectedHabit.negativeTriggers.map((item, index) => (
-              <li key={index} className="text-gray-700">{item}</li>
+              <li key={index} className="flex items-center gap-2 hover:text-blue-600 transition text-gray-300 font-mono ">
+                <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.153 19 21 12l-4.847-7H3l4.848 7L3 19h13.153Z" />
+                </svg>
+                {item}</li>
             ))}
           </ul>
         </div>
-        <div className="bg-white shadow-md rounded-lg p-4">
-          <h2 className="font-semibold text-lg mb-2">motivators</h2>
-          <ul className="space-y-1">
+        <div className="bg-gray-600 shadow-md rounded-lg p-4 w-full max-w-md h-64 overflow-y-auto border ">
+          <h2 className="font-semibold text-lg mb-2">Motivators</h2>
+          <ul className="list-none space-y-3 text-gray-800 dark:text-white ">
             {selectedHabit.motivators.map((item, index) => (
-              <li key={index} className="text-gray-700">{item}</li>
+              <li key={index} className="flex items-center gap-2 hover:text-blue-600 transition text-gray-300 font-mono ">
+                <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.153 19 21 12l-4.847-7H3l4.848 7L3 19h13.153Z" />
+                </svg>
+                {item}</li>
             ))}
           </ul>
         </div>
-        <div className="bg-white shadow-md rounded-lg p-4">
-          <h2 className="font-semibold text-lg mb-2">successFactors</h2>
-          <ul className="space-y-1">
+        <div className="bg-gray-600 shadow-md rounded-lg p-4 w-full max-w-md h-64 overflow-y-auto border ">
+          <h2 className="font-semibold text-lg mb-2">Success Factors</h2>
+          <ul className="list-none space-y-3 text-gray-800 dark:text-white ">
             {selectedHabit.successFactors.map((item, index) => (
-              <li key={index} className="text-gray-700">{item}</li>
+              <li key={index} className="flex items-center gap-2 hover:text-blue-600 transition text-gray-300 font-mono ">
+                <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.153 19 21 12l-4.847-7H3l4.848 7L3 19h13.153Z" />
+                </svg>
+                {item}</li>
             ))}
           </ul>
         </div>

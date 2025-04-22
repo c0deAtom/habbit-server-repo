@@ -46,7 +46,7 @@ export default function HabitDashboard() {
       }
       const data = await response.json();
       setHabits(data);
-      const currentHabit = data.find((item) => item.id === selectedHabit?.id)
+      const currentHabit = data.find((item: any) => item.id === selectedHabit?.id)
       setSelectedHabit(currentHabit || null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');

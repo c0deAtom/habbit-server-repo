@@ -47,12 +47,12 @@ useEffect(() => {
   return (
    <div className="w-full max-w-xl mx-auto mt-6">
      
-      <div className="flex gap-2 p-2 border border-gray-300 rounded-lg bg-white focus-within:ring-2 ring-blue-500 flex-col">
+      <div className="flex gap-2 p-2     flex-col">
         {tags.map((tag, index) => (
           
           <div
             key={index}
-            className="flex items-between justify-between bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium"
+            className="flex items-between justify-between bg-blue-100 text-red-400 px-3 py-1 rounded-full text-sm font-medium w-auto"
           >
             {tag}
             <button
@@ -63,6 +63,8 @@ useEffect(() => {
             </button>
           </div>
         ))}
+ </div>
+ <div>
         <input
           type="text"
           className="flex-grow outline-none px-2 py-1 text-sm"
@@ -71,7 +73,8 @@ useEffect(() => {
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
         />
-      </div>
+        </div>
+     
     </div>
   );
 }
