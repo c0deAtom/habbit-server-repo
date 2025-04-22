@@ -37,3 +37,32 @@ export async function POST(
     return NextResponse.json({ error: 'Failed to record event' }, { status: 500 });
   }
 } 
+
+
+
+// app/api/habits/[id]/events/route.ts
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id: habitId } = params;
+    const { id: eventId } = await request.json();
+
+    if (!eventId) {
+      return NextResponse.json({ error: 'Event ID required' }, { status: 400 });
+    }
+
+    await prisma.habitEvent.delete({
+      where: { id: eventId },
+    });
+
+    return NextResponse.json({ message: 'Event deleted successfully' });
+  } catch (error) {
+    console.error('Delete error:', error);
+    return NextResponse.json({ error: 'Failed to delete event' }, { status: 500 });
+  }
+}
+
+

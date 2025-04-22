@@ -12,7 +12,7 @@ interface HabitData {
 export default function Tag({data, setData, title}: HabitData) {
   const [tags, setTags] = useState<string[]>(data);
   const [inputValue, setInputValue] = useState("");
-  const [saveTags, setSaveTags] = useState([])
+ 
 
 useEffect(() => {
     setData(tags);
@@ -42,14 +42,17 @@ useEffect(() => {
     setTags(newTags);
   };
 
+  
+
   return (
    <div className="w-full max-w-xl mx-auto mt-6">
-      <label className="block text-gray-700 font-medium mb-2">Tags</label>
-      <div className="flex flex-wrap gap-2 p-2 border border-gray-300 rounded-lg bg-white focus-within:ring-2 ring-blue-500">
+     
+      <div className="flex gap-2 p-2 border border-gray-300 rounded-lg bg-white focus-within:ring-2 ring-blue-500 flex-col">
         {tags.map((tag, index) => (
+          
           <div
             key={index}
-            className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium"
+            className="flex items-between justify-between bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium"
           >
             {tag}
             <button

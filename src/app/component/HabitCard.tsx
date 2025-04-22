@@ -121,6 +121,8 @@ console.log(response)
     });
     setIsEditing(false);
   };
+
+  
   
 
   if (isEditing) {
@@ -142,7 +144,7 @@ console.log(response)
         placeholder="Description"
         className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
       />
-  
+
       <Tag data={positiveCues} title="Positive Cues"
       setData={setEditedPositiveCues}/>
 
@@ -160,8 +162,7 @@ console.log(response)
       title="Success Factors"
       setData={setEditedSuccessFactors}/>
  
- 
-     
+
   
       <div className="flex justify-end gap-2 pt-2">
         <button

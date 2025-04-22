@@ -6,7 +6,7 @@ import Modal from "../component/Modal";
 import Navbar from "../component/Navbar";
 import FullView from "../component/FullView"
 
-interface Habit {
+export interface Habit {
   id: string;
   title: string;
   description: string | null;
@@ -38,6 +38,7 @@ export default function HabitDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchHabits = async () => {
+    console.log('ran')
     try {
       const response = await fetch('/api/habits');
       if (!response.ok) {
@@ -45,6 +46,8 @@ export default function HabitDashboard() {
       }
       const data = await response.json();
       setHabits(data);
+      const currentHabit = data.find((item) => item.id === selectedHabit?.id)
+      setSelectedHabit(currentHabit || null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
@@ -88,7 +91,7 @@ export default function HabitDashboard() {
 
   const handleDeleteHabit = async (id: string) => {
     try {
-      const response = await fetch('/api/habits', {
+      const response = await fetch('/api/habits/', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -106,6 +109,8 @@ export default function HabitDashboard() {
       setError(err instanceof Error ? err.message : 'Failed to delete habit');
     }
   };
+
+  
   
 
   const handleUpdateHabit = async (id: string, data: any) => {
@@ -130,17 +135,22 @@ export default function HabitDashboard() {
   };
 
   if (isLoading) {
-    return <div className="p-4">  <div className="flex items-center justify-center h-screen bg-blue-100">
-      <div className="flex flex-col items-center">
+    return( <>
+    <Navbar />
+     <div className="flex items-center justify-center h-screen bg-gray-800 w-full">
+      
         <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
         <p className="mt-4 text-blue-700 font-semibold text-lg">Loading, please wait...</p>
-      </div>
-    </div></div>
+      
+    </div>
+    </>)
   }
 
   if (error) {
     return <div className="p-4 text-red-500">Error: {error}</div>;
   }
+
+  
 
   return (
     <>
@@ -159,10 +169,13 @@ export default function HabitDashboard() {
 
           <FullView
                 key={selectedHabit.id}
-                {...selectedHabit}
+                selectedHabit={selectedHabit}
                 onDelete={handleDeleteHabit}
                 onUpdate={handleUpdateHabit}
                 onClose={setSelectedHabit as any}
+                onRefresh={() => {
+                  fetchHabits();
+                }}
               />
         </div>
       ) : (
