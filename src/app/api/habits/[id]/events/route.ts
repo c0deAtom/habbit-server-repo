@@ -47,7 +47,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id: habitId } = params;
+   
     const { id: eventId } = await request.json();
 
     if (!eventId) {

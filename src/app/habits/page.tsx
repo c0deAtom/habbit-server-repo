@@ -6,6 +6,7 @@ import Modal from "../component/Modal";
 import Navbar from "../component/Navbar";
 import FullView from "../component/FullView"
 
+
 export interface Habit {
   id: string;
   title: string;

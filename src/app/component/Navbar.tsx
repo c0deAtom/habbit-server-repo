@@ -31,7 +31,7 @@ export default function Navbar() {
           <li>
             <Link
               href="/"
-              className="hover:text-yellow-300 transition-colors duration-300"
+              className="hover:text-yellow-600 transition-colors duration-300 text-2xl font-bold"
             >
               Home
             </Link>
@@ -39,17 +39,16 @@ export default function Navbar() {
           <li>
             <Link
               href="/habits"
-              className="hover:text-yellow-300 transition-colors duration-300"
+                className="hover:text-yellow-600 transition-colors duration-300 text-2xl font-bold"
             >
               Habits
             </Link>
           </li>
-          <li>
+          <li className="">
             <Link
-              href="/users"
-              className="hover:text-yellow-300 transition-colors duration-300"
-            >
-              Users
+              href="/events"
+              className="hover:text-yellow-600 transition-colors duration-300 text-2xl font-bold" >
+              Events
             </Link>
           </li>
         </ul>
