@@ -82,7 +82,7 @@ export default function EventsHome() {
     }
 
   fetchHabits()
-    // Refresh your data here if needed
+    // Refresh your wdata here if needed
   };
 
 
