@@ -38,7 +38,7 @@ export default function Navbar() {
           </li>
           <li>
             <Link
-              href="/habits"
+              href="/hhabits"
                 className="hover:text-yellow-600 transition-colors duration-300 text-2xl font-bold"
             >
               Habits
