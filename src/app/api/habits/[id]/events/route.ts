@@ -42,10 +42,15 @@ export async function POST(
 
 // app/api/habits/[id]/events/route.ts
 
+
+
+
 export async function DELETE(
+  
   request: Request,
   { params }: { params: { id: string } }
 ) {
+ 
   try {
    
     const { id: eventId } = await request.json();
@@ -64,5 +69,3 @@ export async function DELETE(
     return NextResponse.json({ error: 'Failed to delete event' }, { status: 500 });
   }
 }
-
-

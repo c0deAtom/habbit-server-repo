@@ -60,7 +60,7 @@ export default function EventsHome() {
 
 
 
-  const [selectedEvents, setSelectedEvents] = useState<string[] | "no" >("no");
+  const [selectedEvents, setSelectedEvents] = useState<string[]  >([]);
 
   const toggleSelect = (id: string) => {
    
@@ -70,20 +70,27 @@ export default function EventsHome() {
   };
   console.log(selectedEvents)
 
-
   const handleDelete = async () => {
-    for (const eventId of selectedEvents) {
-      await fetch(`/api/habits/${eventId}/events`, {
-        method: 'DELETE',
-        body: JSON.stringify({ id: eventId }),
-        headers: { 'Content-Type': 'application/json' },
+    try {
+      console.log("hit1")
+      const res = await fetch('/api/habits/events/delete-multiple', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ids: selectedEvents }),
       });
-
+  
+      const result = await res.json();
+      console.log(result);
+  
+      // Optionally refresh UI
+      fetchHabits();
+    } catch (error) {
+     
     }
-
-  fetchHabits()
-    // Refresh your wdata here if needed
   };
+  
 
 
 
@@ -97,11 +104,11 @@ export default function EventsHome() {
         
         
 
-        {(selectedEvents != "no") && (
+       
           <button class="bg-blue-300 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow"
             onClick={handleDelete}>
             Delete Selected
-          </button>)}
+          </button>
           <h1 className="text-3xl text-center mx-140 ">All events data</h1>
       </div>
        <div className='bg-gray-500'>
