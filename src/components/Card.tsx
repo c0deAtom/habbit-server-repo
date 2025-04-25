@@ -24,6 +24,7 @@ export default function HabitCard({ habit, onAdd, onRemove }: any) {
 
   //Record Events (hit slip)
   const recordEvent = async (type: 'hit' | 'slip') => {
+    console.log("htislip")
     try {
       // Show random message based on type
       if (type === 'hit' && habit.positiveCues.length > 0) {
@@ -42,6 +43,7 @@ export default function HabitCard({ habit, onAdd, onRemove }: any) {
         body: JSON.stringify({ type }),
       });
       console.log(response)
+      onAdd()
       if (!response.ok) {
         throw new Error('Failed to record event');
       }

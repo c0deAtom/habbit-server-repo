@@ -48,6 +48,8 @@ export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
     
   };
 
+ 
+
   return (
     
     <form onSubmit={handleSubmit} className="bg-gray-200 p-6 rounded-lg shadow-md h-72 max-w-2xl mx-auto">

@@ -138,7 +138,9 @@ export default function Dashboard() {
     }
   };
 
+  
   useEffect(() => {
+    
     const newEvent =  habits.flatMap(habit =>
       habit.events.map(event => ({
         ...event,
@@ -146,6 +148,7 @@ export default function Dashboard() {
       }))
     );
     console.log(newEvent)
+    console.log("finder")
     
     
     setAllEvents(newEvent)
@@ -497,7 +500,7 @@ export default function Dashboard() {
         <HabitCard
           key={habit.id}
           habit={habit}
-          onAdd={handleAdd}
+          onAdd={fetchHabits}
           onRemove={handleRemove}
         />
         </div>
