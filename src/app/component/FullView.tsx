@@ -13,24 +13,20 @@ interface HabitCardProps {
   onUpdate: (id: string, data: any) => void;
   onClose: React.Dispatch<React.SetStateAction<null>>;
   onRefresh: any
-  selectedHabit: Habit
+  habit: Habit
 }
 
-export default function FullView({
-  onDelete,
-  onUpdate,
-  onClose,
-  onRefresh,
-  selectedHabit,
-}: HabitCardProps) {
+export default function FullView(
+  habit
+: Habit) {
   const [hitCount, setHitCount] = useState(0);
   const [slipCount, setSlipCount] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedTitle, setEditedTitle] = useState(selectedHabit.title);
+  const [editedTitle, setEditedTitle] = useState(habit.title);
   const [showMessage, setShowMessage] = useState<string | null>(null);
   const [successRate, setSuccessRate] = useState(0);
 
-  const [eventData, setEventData] = useState(selectedHabit.events)
+  const [eventData, setEventData] = useState(habit.events)
 
 
   const [editedDescription, setEditedDescription] = useState(selectedHabit.description || '');
@@ -50,7 +46,7 @@ export default function FullView({
   console.log(getLatestEventIdByType('hit'))
 
 
-
+  console.log(eventData)
 
 
 

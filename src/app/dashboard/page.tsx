@@ -49,7 +49,7 @@ import EventsTable from "@/components/Events"
 
 
 import Navbar from "../component/Navbar"
-import DrawerDemo from "@/components/Drawer"
+import  DrawerHabitDetails from "@/components/Drawer"
 import { Habit } from "@prisma/client"
 
 
@@ -81,7 +81,7 @@ export default function Dashboard() {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [selectedEvents, setSelectedEvents] = useState<string[]  >([]);
   const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
-  const [open, setOpen] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
 
 
@@ -96,10 +96,9 @@ export default function Dashboard() {
     fetchHabits()
   }, [])
 
-  const handleDrawer = (habit: Habit) => {
+  const handleHabitClick = (habit: Habit) => {
     setSelectedHabit(habit)
-    setOpen(true)
-    console.log(selectedHabit)
+    setDrawerOpen(true)
   }
 
   const handleCreateHabit = async (data: {
@@ -373,8 +372,12 @@ export default function Dashboard() {
       )}
 
 
-{selectedHabit && (
-            <DrawerDemo setOpen={() => {setOpen}}habitData={selectedHabit}/>)}
+
+<DrawerHabitDetails
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        habit={selectedHabit}
+      />
       <div className="container mx-auto p-4 relative z-10">
         {/* Header */}
         <header className="flex items-center justify-between py-4 border-b border-slate-700/50 mb-6">
@@ -496,7 +499,7 @@ export default function Dashboard() {
   
     
       {habits.map((habit: any) => (
-        <div onClick={() => (handleDrawer(habit))}>
+        <div onClick={() => (handleHabitClick(habit))}>
         <HabitCard
           key={habit.id}
           habit={habit}
