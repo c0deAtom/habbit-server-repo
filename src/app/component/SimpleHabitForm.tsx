@@ -49,7 +49,8 @@ export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-200 p-6 rounded-lg shadow-md max-w-2xl mx-auto">
+    
+    <form onSubmit={handleSubmit} className="bg-gray-200 p-6 rounded-lg shadow-md h-72 max-w-2xl mx-auto">
      
       
       <div className="space-y-4 ">
@@ -75,6 +76,12 @@ export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
             placeholder="e.g. 15 minutes of mindfulness meditation"
           />
         </div>
+        <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Create Habit
+          </button>
 
         <Tag data={positiveCues} title="Positive Cues"
       setData={setPositiveCues}/>
@@ -95,12 +102,7 @@ export default function SimpleHabitForm({ onSubmit }: SimpleHabitFormProps) {
  
 
         <div className="pt-4">
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Create Habit
-          </button>
+        
         </div>
       </div>
     </form>

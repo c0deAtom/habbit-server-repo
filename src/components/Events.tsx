@@ -31,19 +31,12 @@ export default function EventsTable({ events, toggle, selected, }: { events: Eve
 
   return (
 <div>
-    <Table className='text-2xl '>
+    <Table className='text-1xl '>
 
       <TableCaption>A list of your recent Events.</TableCaption>
       <TableHeader className=''>
         <TableRow className=''>
-          <TableHead className='w-25 '>Select</TableHead>
          
-          <TableHead className=''>Names</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead>Notes</TableHead>
-
-          <TableHead className="text-center">Date</TableHead>
-          <TableHead className='w-100'>ID</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody >

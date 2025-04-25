@@ -66,7 +66,7 @@ export default function HabitCard({ habit, onAdd, onRemove }: any) {
   return (
     <div className="bg-slate-800/50 rounded-lg border from-purple-500 to-pink-500 border-purple-500/30 p-4 relative overflow-hidden">
     <div className="text-sm text-slate-400 mb-2">Habit Tracker</div>
-    <Card className="w-full max-w-sm shadow-lg bg-white">
+    <Card className="w-full max-w-sm shadow-lg bg-gray-400">
 
       <CardHeader>
         <div className="flex space-x-3 ml-auto">
@@ -82,7 +82,7 @@ export default function HabitCard({ habit, onAdd, onRemove }: any) {
             </svg>
           </button>
         </div>
-        <CardTitle>{habit.title}</CardTitle>
+        <CardTitle className="text-blue-500">{habit.title}</CardTitle>
       </CardHeader>
       <CardContent>
         <p className="font-medium">{showMessage || ' '}</p>

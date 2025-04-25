@@ -13,27 +13,29 @@ import {
     DrawerTitle,
     DrawerTrigger,
   } from "@/components/ui/drawer"
+import { Habit } from "@prisma/client"
   
 
-export default function DrawerDemo() {
-  const [open, setOpen] = React.useState(false)
+export default function DrawerDemo(  habitData: any) {
+  const [open, setOpen] = React.useState(true)
   
 
   
 
   return (
-    <Drawer>
-    <DrawerTrigger>dsfdsf</DrawerTrigger>
+    <Drawer open={open} >
+   
     
     <DrawerContent>
       <DrawerHeader>
-        <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+        <DrawerTitle>Are you ab {habitData.title}solutely sure?</DrawerTitle>
+       
         <DrawerDescription>This action cannot be undone.</DrawerDescription>
       </DrawerHeader>
       <DrawerFooter>
         <Button>Submit</Button>
         <DrawerClose>
-          <Button variant="outline">Cancel</Button>
+          <Button onClick={() => {setOpen(false)}} variant="outline">Cancel</Button>
         </DrawerClose>
       </DrawerFooter>
     </DrawerContent>

@@ -20,6 +20,7 @@ import {
   MessageSquare,
   Mic,
   Moon,
+  Plus,
   Radio,
   RefreshCw,
   Search,
@@ -42,11 +43,14 @@ import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import  HabitCard  from "@/components/Card"
+import SimpleHabitForm from "../component/SimpleHabitForm"
+import EventsTable from "@/components/Events"
 
 
 
 import Navbar from "../component/Navbar"
 import DrawerDemo from "@/components/Drawer"
+import { Habit } from "@prisma/client"
 
 
 export default function Dashboard() {
@@ -58,25 +62,134 @@ export default function Dashboard() {
   const [securityLevel, setSecurityLevel] = useState(75)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [isLoading, setIsLoading] = useState(true)
+  
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [positiveCues, setPositiveCues] = useState<string[]>(["dsfds"]);
+  const [negativeTriggers, setNegativeTriggers] = useState<string[]>(["sdfdf"]);
+  const [motivators, setMotivators] = useState<string[]>(["dfdsf"]);
+  const [successFactors, setSuccessFactors] = useState<string[]>(["dsfd"]);
+  const [userId, setUserId] = useState('010b6549-a538-49b0-a2f5-c27082fa3811')
 
 
-  const [habits, setHabits] = useState([])
+
+  const [habits, setHabits] = useState<Habit[]>([]);
+  const [addHabit , setAddHabit] = useState(false)
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
+  const [selectedEvents, setSelectedEvents] = useState<string[]  >([]);
+  const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
+  const [open, setOpen] = useState(false)
+
+
+
+  const fetchHabits = async () => {
+    const res = await fetch("/api/habits")
+    const data = await res.json()
+    setHabits(data)
+  }
 
   useEffect(() => {
-    const fetchHabits = async () => {
-      const res = await fetch("/api/habits")
-      const data = await res.json()
-      setHabits(data)
-    }
+   
     fetchHabits()
   }, [])
+
+  const handleDrawer = (habit: Habit) => {
+    setSelectedHabit(habit)
+    setOpen(true)
+    console.log(selectedHabit)
+  }
+
+  const handleCreateHabit = async (data: {
+    
+    title: string;
+    description: string | null;
+    positiveCues: string[];
+    negativeTriggers: string[];
+    motivators: string[];
+    successFactors: string[];
+  }) => {
+    console.log("yes work")
+    try {
+       
+      const response = await fetch('/api/habits', {
+       
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      console.log("sdf")
+
+      if (!response.ok) {
+        throw new Error('Failed to create habit');
+      }
+
+      // Refresh habits list and close modal
+    fetchHabits()
+    setAddHabit(false)
+     
+      
+    } catch (err) {
+       'Failed to create habit'
+    }
+  };
+
+  useEffect(() => {
+    const newEvent =  habits.flatMap(habit =>
+      habit.events.map(event => ({
+        ...event,
+        habitName: habit.title,
+      }))
+    );
+    console.log(newEvent)
+    
+    
+    setAllEvents(newEvent)
+  }, [habits]);
+
+
+
+  const toggleSelect = (id: string) => {
+   
+    setSelectedEvents(prev =>
+      prev.includes(id) ? prev.filter(eid => eid !== id) : [...prev, id]
+    );
+  };
+
+
+  const handleDelete = async () => {
+    try {
+      console.log("hit1")
+      const res = await fetch('/api/habits/events/delete-multiple', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ids: selectedEvents }),
+      });
+  
+      const result = await res.json();
+      console.log(result);
+  
+      // Optionally refresh UI
+      fetchHabits();
+    } catch (error) {
+     
+    }
+  };
+  
+
+
+  
 
   const handleAdd = (id: string) => {
     console.log("Added event to:", id)
   }
+
 
   const handleRemove = async (id: string) => {
     try {
@@ -92,7 +205,7 @@ export default function Dashboard() {
         throw new Error('Failed to delete habit');
       }
 
-     
+      fetchHabits()
     } catch (err) {
      'Failed to delete habit'
     }
@@ -256,6 +369,9 @@ export default function Dashboard() {
         </div>
       )}
 
+
+{selectedHabit && (
+            <DrawerDemo setOpen={() => {setOpen}}habitData={selectedHabit}/>)}
       <div className="container mx-auto p-4 relative z-10">
         {/* Header */}
         <header className="flex items-center justify-between py-4 border-b border-slate-700/50 mb-6">
@@ -362,26 +478,43 @@ export default function Dashboard() {
                         <div className="h-1.5 w-1.5 rounded-full bg-cyan-500 mr-1 animate-pulse"></div>
                         LIVE
                       </Badge>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400">
-                        <RefreshCw className="h-4 w-4" />
+                      <Button onClick={() => setAddHabit (prev => !prev)}variant="ghost" size="icon" className="h-8 w-8 text-slate-400">
+                        <Plus className="h-4 w-4" />
                       </Button>
+
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <CardContent className="p-6 ">
+                    <div className="w-full overflow-x-auto">
+                <div className="grid grid-flow-col auto-cols-[minmax(250px,_1fr)] gap-6">
+                    
 
   
     
       {habits.map((habit: any) => (
+        <div onClick={() => (handleDrawer(habit))}>
         <HabitCard
           key={habit.id}
           habit={habit}
           onAdd={handleAdd}
           onRemove={handleRemove}
         />
+        </div>
       ))}
+      {addHabit && ( <div className="bg-slate-800/50 rounded-lg border from-purple-500 to-pink-500 border-purple-500/30 p-4 relative overflow-hidden">
+        <div className="text-sm text-slate-400 mb-2">Habit Tracker</div>
+        <SimpleHabitForm onSubmit={(xx) => {
+            handleCreateHabit(xx);
+            console.log(xx);
+          }} />
+ 
+
+
+
+      </div>)}
    
+  </div>
   </div>
                
 
@@ -399,7 +532,7 @@ export default function Dashboard() {
                             value="processes"
                             className="data-[state=active]:bg-slate-700 data-[state=active]:text-cyan-400"
                           >
-                            Processes
+                            Events
                           </TabsTrigger>
                           <TabsTrigger
                             value="storage"
@@ -436,77 +569,39 @@ export default function Dashboard() {
                       </TabsContent>
 
                       <TabsContent value="processes" className="mt-0">
+                      <div className="w-full overflow-x-auto">
+                      <div className="grid grid-flow-col auto-cols-[minmax(250px,_1fr)] gap-6">
                         <div className="bg-slate-800/30 rounded-lg border border-slate-700/50 overflow-hidden">
                           <div className="grid grid-cols-12 text-xs text-slate-400 p-3 border-b border-slate-700/50 bg-slate-800/50">
-                            <div className="col-span-1">PID</div>
-                            <div className="col-span-4">Process</div>
-                            <div className="col-span-2">User</div>
-                            <div className="col-span-2">CPU</div>
-                            <div className="col-span-2">Memory</div>
-                            <div className="col-span-1">Status</div>
+                           
+                          <button className=" bg-blue-300 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow"
+            onClick={handleDelete}>
+            Delete 
+          </button>
+         
+                            <div className="col-span-2 mx-5">Name</div>
+                            <div className="col-span-2 ">Type</div>
+                            <div className="col-span-1 ">Note</div>
+                            <div className="col-span-2">Created</div>
+                            <div className="col-span-1">Id</div>
+                         
                           </div>
 
-                          <div className="divide-y divide-slate-700/30">
-                            <ProcessRow
-                              pid="1024"
-                              name="system_core.exe"
-                              user="SYSTEM"
-                              cpu={12.4}
-                              memory={345}
-                              status="running"
-                            />
-                            <ProcessRow
-                              pid="1842"
-                              name="nexus_service.exe"
-                              user="SYSTEM"
-                              cpu={8.7}
-                              memory={128}
-                              status="running"
-                            />
-                            <ProcessRow
-                              pid="2156"
-                              name="security_monitor.exe"
-                              user="ADMIN"
-                              cpu={5.2}
-                              memory={96}
-                              status="running"
-                            />
-                            <ProcessRow
-                              pid="3012"
-                              name="network_manager.exe"
-                              user="SYSTEM"
-                              cpu={3.8}
-                              memory={84}
-                              status="running"
-                            />
-                            <ProcessRow
-                              pid="4268"
-                              name="user_interface.exe"
-                              user="USER"
-                              cpu={15.3}
-                              memory={256}
-                              status="running"
-                            />
-                            <ProcessRow
-                              pid="5124"
-                              name="data_analyzer.exe"
-                              user="ADMIN"
-                              cpu={22.1}
-                              memory={512}
-                              status="running"
-                            />
+                          <div className="divide-y divide-slate-700/30 overflow-y-auto h-64 ">
+                         
+                          <EventsTable events={allEvents} toggle={toggleSelect} selected={selectedEvents}  />
+
                           </div>
+                        </div>
+                        </div>
                         </div>
                       </TabsContent>
 
                       <TabsContent value="storage" className="mt-0">
                         <div className="bg-slate-800/30 rounded-lg border border-slate-700/50 p-4">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <StorageItem name="System Drive (C:)" total={512} used={324} type="SSD" />
-                            <StorageItem name="Data Drive (D:)" total={2048} used={1285} type="HDD" />
-                            <StorageItem name="Backup Drive (E:)" total={4096} used={1865} type="HDD" />
-                            <StorageItem name="External Drive (F:)" total={1024} used={210} type="SSD" />
-                          </div>
+                           
+                            </div>
                         </div>
                       </TabsContent>
                     </Tabs>
@@ -855,64 +950,6 @@ function StatusItem({ label, value, color }: { label: string; value: number; col
 }
 
 // Component for metric cards
-function MetricCard({
-  title,
-  value,
-  icon: Icon,
-  trend,
-  color,
-  detail,
-}: {
-  title: string
-  value: number
-  icon: LucideIcon
-  trend: "up" | "down" | "stable"
-  color: string
-  detail: string
-}) {
-  const getColor = () => {
-    switch (color) {
-      case "cyan":
-        return "from-cyan-500 to-blue-500 border-cyan-500/30"
-      case "green":
-        return "from-green-500 to-emerald-500 border-green-500/30"
-      case "blue":
-        return "from-blue-500 to-indigo-500 border-blue-500/30"
-      case "purple":
-        return "from-purple-500 to-pink-500 border-purple-500/30"
-      default:
-        return "from-cyan-500 to-blue-500 border-cyan-500/30"
-    }
-  }
-
-  const getTrendIcon = () => {
-    switch (trend) {
-      case "up":
-        return <BarChart3 className="h-4 w-4 text-amber-500" />
-      case "down":
-        return <BarChart3 className="h-4 w-4 rotate-180 text-green-500" />
-      case "stable":
-        return <LineChart className="h-4 w-4 text-blue-500" />
-      default:
-        return null
-    }
-  }
-
-  return (
-    <div className={`bg-slate-800/50 rounded-lg border ${getColor()} p-4 relative overflow-hidden`}>
-      <div className="flex items-center justify-between mb-2">
-        <div className="text-sm text-slate-400">{title}</div>
-        <Icon className={`h-5 w-5 text-${color}-500`} />
-      </div>
-      <div className="text-2xl font-bold mb-1 bg-gradient-to-r bg-clip-text text-transparent from-slate-100 to-slate-300">
-        {value}%
-      </div>
-      <div className="text-xs text-slate-500">{detail}</div>
-      <div className="absolute bottom-2 right-2 flex items-center">{getTrendIcon()}</div>
-      <div className="absolute -bottom-6 -right-6 h-16 w-16 rounded-full bg-gradient-to-r opacity-20 blur-xl from-cyan-500 to-blue-500"></div>
-    </div>
-  )
-}
 
 // Performance chart component
 function PerformanceChart() {
